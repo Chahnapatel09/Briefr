@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.gitignore
+*.md
+Dockerfile
+# nginx.conf should NOT be ignored as it is needed by the Dockerfile
+.eslint*
+.prettier*
+# Cache
+.npm
+.cache

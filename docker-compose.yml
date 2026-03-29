@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: briefr-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: briefr-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+
+networks:
+  default:
+    name: briefr-network
