@@ -142,6 +142,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "cleanup" {
     id     = "ExpireAfter2Days"
     status = "Enabled"
 
+    filter {} # Required for current AWS provider version
+
     expiration {
       days = 2
     }
@@ -216,9 +218,40 @@ resource "aws_dynamodb_table" "users" {
 #  IAM & GOVERNANCE
 # ──────────────────────────────────────────────
 
-# Data source for the pre-existing LabRole (Mandatory for AWS Academy)
 data "aws_iam_role" "labrole" {
   name = "LabRole"
+}
+
+# Create IAM Instance Profile for EC2
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "briefr-ec2-profile"
+  role = data.aws_iam_role.labrole.name
+}
+
+# ──────────────────────────────────────────────
+#  COMPUTE #1: Main EC2 Server
+# ──────────────────────────────────────────────
+
+resource "aws_instance" "briefr_server" {
+  # Hardcoded Amazon Linux 2023 AMI for us-east-1 (avoids restricted DescribeImages permission)
+  ami           = "ami-05b10e08d247fb927"
+  instance_type = "t2.micro"
+  
+  subnet_id                   = aws_subnet.public.id
+  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
+  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
+  associate_public_ip_address = true
+  
+  key_name = "vockey"
+
+  # Minimal User Data to ensure basic tools are ready
+  user_data = <<-EOF
+              #!/bin/bash
+              yum update -y
+              yum install -y git python3 python3-pip
+              EOF
+
+  tags = { Name = "briefr-main-server" }
 }
 
 # ──────────────────────────────────────────────
@@ -277,4 +310,17 @@ resource "aws_lambda_permission" "allow_eventbridge" {
   function_name = aws_lambda_function.scraper.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.daily_trigger.arn
+}
+
+# ──────────────────────────────────────────────
+#  OUTPUTS
+# ──────────────────────────────────────────────
+
+output "ec2_public_ip" {
+  value       = aws_instance.briefr_server.public_ip
+  description = "Public IP of the EC2 instance"
+}
+
+output "s3_bucket_name" {
+  value = aws_s3_bucket.digests.id
 }

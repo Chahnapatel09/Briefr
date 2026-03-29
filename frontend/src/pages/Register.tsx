@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Form, Input, Button, Card, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined, ReadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../api/config';
 
 const { Title, Text } = Typography;
 
@@ -12,7 +13,7 @@ export default function Register() {
   const onFinish = async (values: any) => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: values.email, password: values.password, name: values.name }),

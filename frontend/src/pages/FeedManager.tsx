@@ -1,6 +1,7 @@
 import { Typography, Card, Form, Input, Select, Button, Table, Switch, Space, Tag, message, Row, Col, Tabs } from 'antd';
 import { ClockCircleOutlined, SaveOutlined, DeleteOutlined, PlusOutlined, LinkOutlined, SearchOutlined } from '@ant-design/icons';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../api/config';
 import { useState } from 'react';
 
 const { Title, Text } = Typography;
@@ -78,7 +79,7 @@ export default function FeedManager() {
 
   const syncSettingsToCloud = async (newTime: string, newFeeds: any[]) => {
     try {
-      const response = await fetch('http://localhost:8000/auth/settings', {
+      const response = await fetch(`${API_BASE_URL}/auth/settings`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +114,7 @@ export default function FeedManager() {
     if (!isDirectFeed) {
       message.loading({ content: `Scanning ${feedUrl} for RSS feeds...`, key: 'discover', duration: 0 });
       try {
-        const resp = await fetch(`http://localhost:8000/tools/discover-feed?domain=${encodeURIComponent(feedUrl)}`);
+        const resp = await fetch(`${API_BASE_URL}/tools/discover-feed?domain=${encodeURIComponent(feedUrl)}`);
         const data = await resp.json();
         if (data.found) {
           feedUrl = data.feed_url;

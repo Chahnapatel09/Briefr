@@ -3,6 +3,7 @@ import { Form, Input, Button, Card, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined, ReadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../api/config';
 
 const { Title, Text } = Typography;
 
@@ -19,7 +20,7 @@ export default function Login() {
       formData.append('username', values.email);
       formData.append('password', values.password);
 
-      const response = await fetch('http://localhost:8000/auth/token', {
+      const response = await fetch(`${API_BASE_URL}/auth/token`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData,
