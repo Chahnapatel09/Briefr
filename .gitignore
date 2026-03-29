@@ -1,0 +1,40 @@
+# ── Terraform ──────────────────────────────
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/terraform.tfvars
+
+# ── Python (backend + lambda) ──────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+.venv/
+*.egg-info/
+
+# ── Node / Vite (frontend) ─────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# ── AWS secrets ────────────────────────────
+*.pem
+*.key
+credentials
+
+# ── macOS ──────────────────────────────────
+.DS_Store
+.AppleDouble
+
+# ── VS Code ────────────────────────────────
+.vscode/settings.json
+
+# ── Logs & build artifacts ─────────────────
+*.log
+*.zip
+*.out
+out.json
+response.json
