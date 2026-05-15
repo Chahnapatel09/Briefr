@@ -52,4 +52,4 @@ The project is built on AWS using a modular architecture:
 
 ---
 
-Developed for CSCI5409 Advanced Topics in Cloud Computing.
+
